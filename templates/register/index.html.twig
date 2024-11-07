@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RegisterController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+    {{ form_start(registrationForm) }}
+<div class="example-wrapper">
+    <form method="post" action="{{ path('app_register') }}">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="roles">role</label>
+        <select name="roles" id="roles">
+            <option value="ROLE_TEACHER">Teacher</option>
+            <option value="ROLE_STUDENT">Student</option>
+        </select>
+        <button type="submit">Register</button>
+    </form>
+</div>
+{% endblock %}
