@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use function Sodium\add;
 
 class RegisterController extends AbstractController
 {
@@ -24,20 +25,24 @@ class RegisterController extends AbstractController
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $plainPassword = $form->get('plainPassword')->getData();
+        if (isset($_POST['email'])) {
+            $plainPassword = $_POST['password'];
 
             // Encode password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-            $user->setEmail($form->get('email')->getData());
-            $user->setRoles($form->get('roles')->getData());
+            $user->setEmail($_POST['email']);
+
+            // user role must be array
+            $roles_list = [];
+            array_push($roles_list, $_POST['roles']);
+            $user->setRoles($roles_list);
 
             // Save user to database
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('/dashboard');
+            return $this->redirectToRoute('app_dashboard');
         }
 
         return $this->render('register/index.html.twig', [
